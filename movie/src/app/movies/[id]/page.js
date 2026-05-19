@@ -1,13 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { movies } from "@/data/movies";
 import TrailerButton from "@/components/TrailerButton";
+import { getMovieById, getMovies } from "@/lib/movie-service";
 
-export function generateStaticParams() {
-  return movies.map((movie) => ({
-    id: movie.id.toString(),
-  }));
-}
+export const dynamic = "force-dynamic";
 
 function getYouTubeVideoId(url) {
   if (!url) {
@@ -27,8 +23,9 @@ function getYouTubeVideoId(url) {
   return parsedUrl.searchParams.get("v") || "";
 }
 
-export default function MovieDetailsPage({ params }) {
-  const movie = movies.find((item) => item.id === Number(params.id));
+export default async function MovieDetailsPage({ params }) {
+  const movies = await getMovies();
+  const movie = (await getMovieById(params.id)) || movies.find((item) => item.id === Number(params.id));
   const similarMovies = movies.filter((item) => item.id !== movie?.id).slice(0, 6);
 
   if (!movie) {

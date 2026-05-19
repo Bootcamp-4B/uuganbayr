@@ -1,9 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import MovieSection from "@/components/MovieSection";
-import { movies } from "@/data/movies";
+import { getMovies } from "@/lib/movie-service";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const movies = await getMovies();
   const firstMovie = movies[0];
 
   return (
@@ -27,7 +30,7 @@ export default function Home() {
         </div>
       </section>
 
-      <MovieSection title="Popular Movies" movies={movies.slice(0, 6)} />
+      <MovieSection title="Popular Movies" movies={movies.slice(0, 8)} />
       <MovieSection title="Top Rated" movies={movies.slice(3, 9)} />
       <MovieSection title="Coming Soon" movies={movies.slice(1, 7)} />
     </main>

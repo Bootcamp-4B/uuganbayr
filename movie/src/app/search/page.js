@@ -1,35 +1,10 @@
-"use client";
+import SearchClient from "@/components/SearchClient";
+import { getMovies } from "@/lib/movie-service";
 
-import { useState } from "react";
-import MovieCard from "@/components/MovieCard";
-import { movies } from "@/data/movies";
+export const dynamic = "force-dynamic";
 
-export default function SearchPage() {
-  const [searchText, setSearchText] = useState("");
+export default async function SearchPage() {
+  const movies = await getMovies();
 
-  const filteredMovies = movies.filter((movie) =>
-    movie.title.toLowerCase().includes(searchText.toLowerCase()),
-  );
-
-  return (
-    <main className="page simple-page">
-      <h1>Search</h1>
-      <input
-        value={searchText}
-        onChange={(event) => setSearchText(event.target.value)}
-        placeholder="Search movie..."
-        className="search-input"
-      />
-
-      {filteredMovies.length === 0 ? (
-        <div className="empty-box">No movie found.</div>
-      ) : (
-        <div className="movie-grid">
-          {filteredMovies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
-          ))}
-        </div>
-      )}
-    </main>
-  );
+  return <SearchClient movies={movies} />;
 }

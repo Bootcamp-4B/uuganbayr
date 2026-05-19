@@ -20,9 +20,22 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+To load the TMDB movie API, create `.env.local` and add either:
+
+```bash
+TMDB_API_KEY=your_api_key
+```
+
+or:
+
+```bash
+TMDB_ACCESS_TOKEN=your_read_access_token
+```
+
 ## Main files
 
 - `src/data/movies.js` - movie data
+- `src/lib/tmdb.js` - TMDB movie API
 - `src/components/MovieCard.js` - single movie card
 - `src/components/MovieSection.js` - movie list section
 - `src/app/page.js` - home page
