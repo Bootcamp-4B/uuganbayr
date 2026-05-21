@@ -1,5 +1,5 @@
 import { movies as localMovies } from "@/data/movies";
-import { getTmdbMovieById, getTmdbMovies, TMDB_MOVIE_IDS } from "@/lib/tmdb";
+import { getTmdbMovieById, getTmdbMovies } from "@/lib/tmdb";
 
 export async function getMovies() {
   const tmdbMovies = await getTmdbMovies();
@@ -19,9 +19,5 @@ export async function getMovieById(id) {
     return localMovie;
   }
 
-  if (TMDB_MOVIE_IDS.includes(movieId)) {
-    return getTmdbMovieById(movieId);
-  }
-
-  return null;
+  return getTmdbMovieById(movieId);
 }
