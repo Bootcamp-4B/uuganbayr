@@ -217,6 +217,22 @@ select {
   object-fit: cover;
 }
 
+.hero-carousel {
+  isolation: isolate;
+}
+
+.hero-track {
+  height: 100%;
+  display: flex;
+  transition: transform 0.55s ease;
+}
+
+.hero-slide {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+}
+
 .hero-dark {
   position: absolute;
   inset: 0;
@@ -242,6 +258,59 @@ select {
   color: #6366f1;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.hero-nav {
+  width: 38px;
+  height: 38px;
+  position: absolute;
+  top: 50%;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.55);
+  color: #ffffff;
+  cursor: pointer;
+  transform: translateY(-50%);
+  backdrop-filter: blur(8px);
+}
+
+.hero-nav:hover {
+  background: rgba(67, 56, 202, 0.88);
+}
+
+.hero-nav-left {
+  left: 18px;
+}
+
+.hero-nav-right {
+  right: 18px;
+}
+
+.hero-dots {
+  position: absolute;
+  left: 40px;
+  bottom: 22px;
+  z-index: 4;
+  display: flex;
+  gap: 8px;
+}
+
+.hero-dots button {
+  width: 24px;
+  height: 5px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.hero-dots .active-dot {
+  width: 42px;
+  background: #ffffff;
 }
 
 .hero-content h1,
@@ -1055,7 +1124,7 @@ body.dark-mode .genre-list .active-genre {
 
   .hero-content {
     width: 100%;
-    padding: 22px;
+    padding: 22px 54px 36px 22px;
   }
 
   .hero-content h1,
@@ -1065,6 +1134,28 @@ body.dark-mode .genre-list .active-genre {
 
   .hero-content p {
     font-size: 13px;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .hero-nav {
+    width: 32px;
+    height: 32px;
+  }
+
+  .hero-nav-left {
+    left: 10px;
+  }
+
+  .hero-nav-right {
+    right: 10px;
+  }
+
+  .hero-dots {
+    left: 22px;
+    bottom: 16px;
   }
 
   .movie-grid {
