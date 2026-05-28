@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import MovieCard from "@/components/MovieCard";
 import TrailerButton from "@/components/TrailerButton";
 import { getMovieById, getMovies } from "@/lib/movie-service";
 
@@ -26,7 +27,7 @@ function getYouTubeVideoId(url) {
 export default async function MovieDetailsPage({ params }) {
   const movies = await getMovies();
   const movie = (await getMovieById(params.id)) || movies.find((item) => item.id === Number(params.id));
-  const similarMovies = movies.filter((item) => item.id !== movie?.id).slice(0, 6);
+  const similarMovies = movies.filter((item) => item.id !== movie?.id).slice(0, 12);
 
   if (!movie) {
     return (
@@ -44,52 +45,57 @@ export default async function MovieDetailsPage({ params }) {
 
   return (
     <main className="details-page">
-      <section className="details-layout">
-        <div className="details-title-row">
-          <div>
-            <h1>{movie.title}</h1>
-            <p className="movie-meta">
-              {movie.year} · PG · {movie.duration}
-            </p>
-          </div>
+      <section className="details-hero">
+        <Image
+          src={movie.cover || movie.image}
+          alt=""
+          fill
+          className="details-hero-backdrop"
+          priority
+        />
+        <div className="details-hero-shade" />
 
-          <div className="rating-box">
-            <p>Rating</p>
-            <strong>⭐ {movie.rating}<span>/10</span></strong>
-          </div>
-        </div>
-
-        <div className="details-media">
+        <div className="details-hero-content">
           <Image
             src={movie.image}
             alt={movie.title}
-            width={240}
-            height={360}
+            width={220}
+            height={330}
             className="details-poster"
             priority
           />
 
-          <div className="trailer-preview">
-            <Image
-              src={movie.cover}
-              alt={`${movie.title} trailer`}
-              fill
-              className="hero-image"
-              priority
-            />
-            <div className="trailer-shade" />
-            <TrailerButton title={movie.title} videoId={trailerVideoId} />
+          <div className="details-hero-copy">
+            <div className="details-title-row">
+              <div>
+                <h1>{movie.title}</h1>
+                <p className="movie-meta">
+                  {movie.year} · PG · {movie.duration}
+                </p>
+              </div>
+
+              <div className="rating-box">
+                <p>Rating</p>
+                <strong>⭐ {movie.rating}<span>/10</span></strong>
+              </div>
+            </div>
+
+            <div className="details-tags">
+              {movieTags.map((tag) => (
+                <span key={tag}>{tag}</span>
+              ))}
+            </div>
+
+            <p className="details-text">{movie.description}</p>
+
+            <div className="details-hero-actions">
+              <TrailerButton title={movie.title} videoId={trailerVideoId} />
+            </div>
           </div>
         </div>
+      </section>
 
-        <div className="details-tags">
-          {movieTags.map((tag) => (
-            <span key={tag}>{tag}</span>
-          ))}
-        </div>
-
-        <p className="details-text">{movie.description}</p>
-
+      <section className="details-layout">
         <div className="movie-info-table">
           <div>
             <b>Director</b>
@@ -107,22 +113,12 @@ export default async function MovieDetailsPage({ params }) {
 
         <div className="more-heading">
           <h2>More like this</h2>
-          <Link href="/">See more →</Link>
+          <Link href="/popular">See more →</Link>
         </div>
 
         <div className="details-more-grid">
-          {similarMovies.slice(0, 5).map((item) => (
-            <Link href={`/movies/${item.id}`} className="details-more-card" key={item.id}>
-              <Image
-                src={item.image}
-                alt={item.title}
-                width={160}
-                height={235}
-                className="movie-poster"
-              />
-              <p>⭐ {item.rating}/10</p>
-              <h3>{item.title}</h3>
-            </Link>
+          {similarMovies.map((item) => (
+            <MovieCard key={item.id} movie={item} />
           ))}
         </div>
       </section>

@@ -4,19 +4,39 @@ import { useState } from "react";
 import MovieCard from "@/components/MovieCard";
 
 export default function GenresClient({ genres, movies }) {
-  const [selectedGenre, setSelectedGenre] = useState("All");
+  const [selectedGenres, setSelectedGenres] = useState([]);
 
   const filteredMovies =
-    selectedGenre === "All"
+    selectedGenres.length === 0
       ? movies
-      : movies.filter((movie) => movie.genre === selectedGenre);
+      : movies.filter((movie) => {
+          const movieGenres = new Set([movie.genre, ...(movie.tags || [])].filter(Boolean));
+
+          return selectedGenres.some((genre) => movieGenres.has(genre));
+        });
+  const resultsLabel = selectedGenres.length === 0 ? "All" : selectedGenres.join(", ");
+
+  function toggleGenre(genre) {
+    if (genre === "All") {
+      setSelectedGenres([]);
+      return;
+    }
+
+    setSelectedGenres((currentGenres) => {
+      if (currentGenres.includes(genre)) {
+        return currentGenres.filter((currentGenre) => currentGenre !== genre);
+      }
+
+      return [...currentGenres, genre];
+    });
+  }
 
   return (
     <main className="page genre-page">
       <div className="genre-results">
         <h1>Search results</h1>
         <h2>
-          {filteredMovies.length} results for &quot;{selectedGenre}&quot;
+          {filteredMovies.length} results for &quot;{resultsLabel}&quot;
         </h2>
 
         {filteredMovies.length === 0 ? (
@@ -35,15 +55,22 @@ export default function GenresClient({ genres, movies }) {
         <p>See lists of movies by genre</p>
 
         <div className="genre-list">
-          {genres.map((genre) => (
-            <button
-              key={genre}
-              onClick={() => setSelectedGenre(genre)}
-              className={selectedGenre === genre ? "active-genre" : ""}
-            >
-              {genre} <span>›</span>
-            </button>
-          ))}
+          {genres.map((genre) => {
+            const isActive =
+              genre === "All" ? selectedGenres.length === 0 : selectedGenres.includes(genre);
+
+            return (
+              <button
+                key={genre}
+                onClick={() => toggleGenre(genre)}
+                className={isActive ? "active-genre" : ""}
+                type="button"
+                aria-pressed={isActive}
+              >
+                {genre} <span>{isActive && genre !== "All" ? "✓" : "›"}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </main>
