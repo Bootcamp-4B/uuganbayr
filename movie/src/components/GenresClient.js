@@ -1,10 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import MovieCard from "@/components/MovieCard";
 
+function getGenresFromParams(searchParams, genres) {
+  const genreValues = searchParams.getAll("genre").flatMap((genreValue) => genreValue.split(","));
+
+  return [...new Set(
+    genreValues
+      .map((genre) => genre.trim())
+      .filter((genre) => genre && genre !== "All" && genres.includes(genre)),
+  )];
+}
+
 export default function GenresClient({ genres, movies }) {
-  const [selectedGenres, setSelectedGenres] = useState([]);
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const selectedGenres = getGenresFromParams(searchParams, genres);
 
   const filteredMovies =
     selectedGenres.length === 0
@@ -18,16 +31,27 @@ export default function GenresClient({ genres, movies }) {
 
   function toggleGenre(genre) {
     if (genre === "All") {
-      setSelectedGenres([]);
+      updateGenreParams([]);
       return;
     }
 
-    setSelectedGenres((currentGenres) => {
-      if (currentGenres.includes(genre)) {
-        return currentGenres.filter((currentGenre) => currentGenre !== genre);
-      }
+    const nextGenres = selectedGenres.includes(genre)
+      ? selectedGenres.filter((currentGenre) => currentGenre !== genre)
+      : [...selectedGenres, genre];
 
-      return [...currentGenres, genre];
+    updateGenreParams(nextGenres);
+  }
+
+  function updateGenreParams(nextGenres) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("genre");
+
+    if (nextGenres.length > 0) {
+      params.set("genre", nextGenres.join(","));
+    }
+
+    router.replace(params.toString() ? `${pathname}?${params.toString()}` : pathname, {
+      scroll: false,
     });
   }
 
